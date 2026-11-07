@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>London Winter Weekend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: single-theme midnight winter sky; a hero with countdown, then a grid of day cards that open into a full programme sheet. */
+:root {
+  --night: #1e120a;          /* dark oak */
+  --night-2: #3a2416;        /* warm walnut */
+  --frost: #f4e7cf;          /* parchment */
+  --mist: #c8b08a;           /* aged ink */
+  --candle: #f2c46d;         /* candlelight gold */
+  --ember: #e0874a;
+  --line: rgba(244, 231, 207, 0.16);
+  --panel: rgba(58, 36, 22, .72);
+  --body-ink: #e6d6b8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Crimson Pro", Georgia, "Times New Roman", serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: radial-gradient(90% 60% at 20% 0%, rgba(214,120,48,.22) 0%, transparent 60%) fixed, radial-gradient(80% 60% at 90% 10%, rgba(150,60,90,.18) 0%, transparent 60%) fixed, radial-gradient(120% 80% at 50% 0%, #4a2c18 0%, var(--night) 60%) fixed, var(--night);
+  color: var(--frost);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+#snow { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 20px 64px; }
+
+/* Hero */
+header.hero { text-align: left; padding: 78px 0 28px; position: relative; }
+.candles { display: flex; gap: 26px; margin-bottom: 22px; height: 46px; align-items: flex-end; }
+.candle { width: 7px; height: 30px; background: linear-gradient(#f3ead6, #cfc3a6); border-radius: 2px; position: relative; animation: float 6s ease-in-out infinite; }
+.candle:nth-child(2) { height: 24px; animation-delay: -2s; }
+.candle:nth-child(3) { height: 34px; animation-delay: -4s; }
+.candle:nth-child(4) { height: 22px; animation-delay: -1s; }
+.candle::before { content: ""; position: absolute; left: 50%; top: -12px; width: 7px; height: 11px; transform: translateX(-50%); background: radial-gradient(circle at 50% 70%, #fff6d8 0%, var(--candle) 45%, transparent 75%); border-radius: 50% 50% 45% 45%; animation: flicker 1.8s ease-in-out infinite alternate; }
+.candle::after { content: ""; position: absolute; left: 50%; top: -24px; width: 40px; height: 40px; transform: translateX(-50%); background: radial-gradient(circle, rgba(242,196,109,0.28), transparent 70%); }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes flicker { from { opacity: .8; transform: translateX(-50%) scale(1); } to { opacity: 1; transform: translateX(-50%) scale(1.12, .94); } }
+
+.eyebrow { font-family: var(--font-display); letter-spacing: .22em; text-transform: uppercase; font-size: 12px; color: var(--candle); margin: 0 0 10px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(34px, 7vw, 60px); line-height: 1.05; margin: 0 0 12px; text-wrap: balance; text-shadow: 0 0 24px rgba(242,196,109,.25); }
+.lede { color: var(--mist); max-width: 60ch; margin: 0 0 26px; font-size: 19px; }
+
+.countdown { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding: 16px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); backdrop-filter: blur(4px); }
+.countdown .label { font-family: var(--font-display); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--mist); width: 100%; }
+.cd-unit { display: flex; flex-direction: column; align-items: flex-start; min-width: 56px; }
+.cd-num { font-family: var(--font-display); font-size: 34px; line-height: 1; color: var(--candle); font-variant-numeric: tabular-nums; }
+.cd-name { font-size: 14px; color: var(--mist); }
+.cd-msg { font-family: var(--font-display); font-size: 20px; color: var(--candle); }
+
+.hero-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: stretch; }
+.weather-btn { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-radius: 14px; border: 1px solid rgba(242,196,109,.45); background: var(--panel); color: var(--frost); text-decoration: none; line-height: 1.35; transition: border-color .2s ease, box-shadow .2s ease; }
+.weather-btn:hover, .weather-btn:focus-visible { border-color: var(--candle); box-shadow: 0 0 20px rgba(242,196,109,.25); outline: none; }
+.weather-btn strong { font-family: var(--font-display); font-weight: 500; font-size: 16px; color: var(--candle); }
+.wx-icon { font-size: 28px; color: var(--candle); }
+.wx-sub { color: var(--mist); font-size: 15px; }
+.wx-chip { color: var(--mist); font-size: 14px; font-variant-numeric: tabular-nums; }
+
+/* Weather sheet */
+.wx-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.wx-day { display: grid; grid-template-columns: 92px 1fr; gap: 4px 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: rgba(233,238,248,.03); }
+.wx-day .wx-when { font-family: var(--font-display); font-size: 13px; letter-spacing: .1em; color: var(--candle); }
+.wx-day .wx-temp { font-family: var(--font-display); font-size: 22px; font-variant-numeric: tabular-nums; }
+.wx-day .wx-sky { color: var(--mist); font-size: 15px; }
+.wx-day .wx-wear { grid-column: 2; margin: 4px 0 0; color: var(--body-ink); }
+.wx-src { display: inline-block; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--mist); margin-left: 6px; vertical-align: 2px; }
+.wx-h3 { font-family: var(--font-display); font-size: 16px; letter-spacing: .12em; text-transform: uppercase; color: var(--mist); margin: 24px 0 10px; }
+.pack { margin: 0; padding-left: 20px; display: grid; gap: 4px; color: var(--body-ink); }
+.live-link { display: inline-flex; gap: 8px; align-items: center; margin-top: 18px; padding: 10px 16px; border-radius: 10px; background: var(--candle); color: var(--night); font-weight: 600; text-decoration: none; }
+.live-link:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
+@media (max-width: 600px) { .wx-day { grid-template-columns: 1fr; } .wx-day .wx-wear { grid-column: 1; } .weather-btn, .countdown { width: 100%; } }
+
+
+/* Fairy lights + illustrations */
+.garland { position: absolute; left: -20px; right: -20px; top: 0; height: 70px; pointer-events: none; }
+.garland svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.tw { animation: twinkle 2.6s ease-in-out infinite alternate; }
+@keyframes twinkle { 0% { opacity: .45; } 60% { opacity: 1; } 100% { opacity: .75; } }
+.card-art { display: block; width: 100%; aspect-ratio: 16 / 7; border-bottom: 1px solid var(--line); background: #2b190d; }
+.card-art svg, .sheet-art svg { width: 100%; height: 100%; display: block; }
+.card-body { display: flex; flex-direction: column; gap: 8px; padding: 16px 20px 0; flex: 1; }
+.sheet-art { height: 150px; flex: none; border-bottom: 1px solid var(--line); background: #2b190d; }
+.sails { transform-box: view-box; animation: spin 18s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 600px) { .sheet-art { height: 120px; } }
+
+/* Day cards */
+.section-title { font-family: var(--font-display); font-size: 14px; letter-spacing: .2em; text-transform: uppercase; color: var(--mist); margin: 36px 0 14px; display: flex; align-items: center; gap: 12px; }
+.section-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line), transparent); }
+.days { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.day-card { position: relative; text-align: left; font: inherit; color: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 8px; padding: 0 0 18px; border-radius: 16px; border: 1px solid var(--line); background: linear-gradient(165deg, rgba(84, 52, 30, .95), rgba(38, 23, 13, .95)); overflow: hidden; transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+.day-card::before { content: ""; position: absolute; inset: -40% -60%; background: linear-gradient(115deg, transparent 40%, rgba(242,196,109,.12) 50%, transparent 60%); transform: translateX(-60%); transition: transform .9s ease; pointer-events: none; }
+.day-card:hover, .day-card:focus-visible { transform: translateY(-3px); border-color: rgba(242,196,109,.55); box-shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(242,196,109,.2); outline: none; }
+.day-card:hover::before, .day-card:focus-visible::before { transform: translateX(60%); }
+.day-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.day-date { font-family: var(--font-display); font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--candle); }
+.day-title { font-family: var(--font-display); font-size: 23px; line-height: 1.2; margin: 0; text-wrap: balance; }
+.day-area { color: var(--mist); margin: 0; font-size: 17px; }
+.day-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tag { font-size: 13px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--frost); background: rgba(233,238,248,.05); }
+.tag.today { border-color: var(--candle); color: var(--night); background: var(--candle); font-weight: 600; }
+.tag.opt { border-color: rgba(242,196,109,.45); color: var(--candle); }
+.open-hint { margin-top: auto; padding-top: 10px; font-size: 15px; color: var(--candle); display: flex; align-items: center; gap: 6px; }
+
+footer { color: var(--mist); font-size: 15px; margin-top: 40px; display: grid; gap: 6px; }
+footer strong { color: var(--frost); font-weight: 600; }
+
+/* Detail sheet */
+.sheet-backdrop { position: fixed; inset: 0; background: rgba(15, 8, 3, .75); backdrop-filter: blur(3px); z-index: 10; display: none; }
+.sheet { position: fixed; z-index: 11; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(720px, calc(100% - 32px)); max-height: calc(100vh - 48px); max-height: calc(100dvh - 48px); display: none; flex-direction: column; border-radius: 18px; border: 1px solid rgba(242,196,109,.35); background: linear-gradient(170deg, #4a2e1b, #24150b 55%); box-shadow: 0 30px 80px rgba(0,0,0,.55); overflow: hidden; }
+.open .sheet-backdrop { display: block; }
+.open .sheet { display: flex; animation: rise .35s ease; }
+@keyframes rise { from { opacity: 0; transform: translate(-50%, -46%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+.sheet-head { padding: 22px 22px 14px; border-bottom: 1px solid var(--line); display: grid; gap: 6px; position: relative; }
+.sheet-head h2 { font-family: var(--font-display); font-size: clamp(24px, 5vw, 32px); margin: 0; line-height: 1.15; padding-right: 44px; text-wrap: balance; }
+.sheet-head p { margin: 0; color: var(--mist); }
+.close { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: rgba(233,238,248,.06); color: var(--frost); font-size: 22px; line-height: 1; cursor: pointer; }
+.close:hover, .close:focus-visible { border-color: var(--candle); color: var(--candle); outline: none; }
+
+.toggle { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px; margin-top: 10px; border-radius: 12px; background: rgba(15, 8, 3, .5); border: 1px solid var(--line); width: fit-content; max-width: 100%; }
+.toggle button { font: inherit; font-size: 15px; color: var(--mist); background: transparent; border: 0; border-radius: 9px; padding: 7px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.toggle button[aria-pressed="true"] { background: var(--candle); color: var(--night); font-weight: 600; box-shadow: 0 0 16px rgba(242,196,109,.35); }
+.toggle button:focus-visible { outline: 2px solid var(--candle); outline-offset: 2px; }
+.variant-note { margin: 4px 0 0; font-style: italic; color: var(--mist); font-size: 16px; }
+
+.sheet-body { overflow-y: auto; padding: 18px 22px 26px; -webkit-overflow-scrolling: touch; }
+.timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+.timeline::before { content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px; border-left: 2px dotted rgba(242,196,109,.35); }
+.timeline li { position: relative; padding: 0 0 18px 32px; }
+.timeline li::before { content: "✦"; position: absolute; left: 0; top: 1px; width: 16px; text-align: center; font-size: 14px; color: var(--candle); text-shadow: 0 0 10px rgba(242,196,109,.7); background: #2b190d; }
+.timeline li.rest::before { content: "☕︎"; font-size: 13px; }
+.time { font-family: var(--font-display); font-size: 13px; letter-spacing: .1em; color: var(--candle); font-variant-numeric: tabular-nums; }
+.item-title { font-weight: 600; font-size: 19px; margin: 1px 0 2px; }
+.item-text { margin: 0; color: var(--body-ink); }
+.map-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; font-size: 15px; color: var(--candle); text-decoration: none; border-bottom: 1px dashed rgba(242,196,109,.5); }
+.map-link:hover, .map-link:focus-visible { color: #ffe3a6; border-bottom-style: solid; outline: none; }
+.sheet-end { display: flex; justify-content: center; padding-top: 6px; }
+.sheet-end button { font: inherit; font-size: 16px; color: var(--night); background: var(--candle); border: 0; border-radius: 10px; padding: 10px 22px; cursor: pointer; }
+.sheet-end button:focus-visible { outline: 2px solid var(--frost); outline-offset: 2px; }
+.book { display: inline-block; margin-left: 6px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--ember); color: var(--ember); vertical-align: 2px; }
+
+@media (max-width: 600px) {
+  body { font-size: 17px; }
+  header.hero { padding-top: 32px; }
+  .sheet { left: 10px; right: 10px; top: auto; bottom: calc(10px + env(safe-area-inset-bottom)); transform: none; width: auto; max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px - env(safe-area-inset-bottom)); border-radius: 18px; border-bottom: 1px solid rgba(242,196,109,.35); }
+  .open .sheet { animation: slideup .3s ease; }
+  @keyframes slideup { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .cd-num { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<canvas id="snow" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header class="hero">
+    <div class="garland" id="garland" aria-hidden="true"></div>
+    <div class="candles" aria-hidden="true"><span class="candle"></span><span class="candle"></span><span class="candle"></span><span class="candle"></span></div>
+    <p class="eyebrow">Fri 13 – Tue 17 November · West Hampstead base</p>
+    <h1>London Winter Weekend</h1>
+    <p class="lede">Three full days of markets, twinkling lights, a little wizardry and one very red windmill. Every day runs the same way: out all morning, home for rest and coffee, then out again for dinner and drinks.</p>
+    <div class="hero-row">
+      <div class="countdown" id="countdown" aria-live="polite"></div>
+      <a class="weather-btn" href="#weather"><span class="wx-icon" aria-hidden="true">❄</span><span><strong>Weather &amp; what to wear</strong><br><span class="wx-sub" id="wx-sub">Fri–Sat outlook: dry, cold nights</span></span></a>
+    </div>
+  </header>
+
+  <h2 class="section-title">The days</h2>
+  <div class="days" id="days"></div>
+
+  <footer>
+    <div><strong>Getting around:</strong> tap a contactless card or phone on the tube; fares cap daily. Most days run on the Jubilee line from West Hampstead.</div>
+    <div><strong>To book:</strong> Albert's Schloss (Sat), Sunday dinner, Old Compton Brasserie (Mon 17:45), Moulin Rouge tickets.</div>
+    <div>Hyde Park Winter Wonderland opens 19 Nov, two days after you leave.</div>
+  </footer>
+</div>
+
+<div id="overlay">
+  <div class="sheet-backdrop" id="backdrop"></div>
+  <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-art" id="sheet-art" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <span class="day-date" id="sheet-date"></span>
+      <h2 id="sheet-title"></h2>
+      <p id="sheet-area"></p>
+      <button class="close" id="close" aria-label="Close day">×</button>
+      <div id="toggle-wrap"></div>
+    </div>
+    <div class="sheet-body" id="sheet-body"></div>
+  </section>
+</div>
+
+<script>
+const M = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q + ", London");
+
+const mondayEvening = [
+  { time: "15:00", title: "Home: rest, coffee, get ready", text: "Pack for tomorrow while you're at it.", rest: true },
+  { time: "17:45", title: "Pre-theatre dinner at Old Compton Brasserie", text: "Buzzy Soho brasserie, 5 minutes' walk from the theatre. Stroll through the Leicester Square Christmas market on the way.", map: "Old Compton Brasserie, 36 Old Compton Street", book: true },
+  { time: "19:30", title: "Moulin Rouge! The Musical", text: "Piccadilly Theatre, 16 Denman St. About 2h45 with interval, out around 22:15. One drink nearby, then home: early start tomorrow.", map: "Piccadilly Theatre, Denman Street" }
+];
+
+const DAYS = [
+  {
+    id: "friday", date: "2026-11-13", label: "Fri 13 Nov", title: "Arrival", area: "Late evening, straight home to West Hampstead",
+    tags: ["Settle in"],
+    variants: [{ name: "Plan", items: [
+      { time: "Evening", title: "Arrive and head home", text: "Tap a contactless card or phone on the tube: fares cap daily, no Oyster needed.", map: "West Hampstead Station" },
+      { time: "Late", title: "Tea, unpack, early night", text: "Big day tomorrow: shopping starts at 10.", rest: true }
+    ]}]
+  },
+  {
+    id: "saturday", date: "2026-11-14", label: "Sat 14 Nov", title: "West End, shopping & the river", area: "Oxford St · Soho · Covent Garden · Westminster · South Bank",
+    tags: ["Harry Potter Shop", "Christmas lights", "Albert's Schloss"],
+    variants: [
+      { name: "Clear skies", icon: "✦", items: [
+        { time: "09:45", title: "Jubilee line to Bond Street", text: "About 10 minutes from West Hampstead.", map: "Bond Street Station" },
+        { time: "10:00", title: "Harry Potter Shop, Oxford Street", text: "Opened 4 Nov, so be there at opening to beat the queue. Two floors, a Leaky Cauldron café with Butterbeer, and Oxford Street-only merch.", map: "Harry Potter Shop, 134-140 Oxford Street" },
+        { time: "10:45", title: "Shopping run", text: "Oxford St → Regent St → Liberty → Carnaby St, with the Christmas lights already up.", map: "Liberty London, Regent Street" },
+        { time: "13:00", title: "Lunch at Kingly Court", text: "Three floors of restaurants just off Carnaby. No booking needed.", map: "Kingly Court, Carnaby" },
+        { time: "14:00", title: "Walking tour of the centre", text: "Soho → Covent Garden (fresh Christmas lights and the big tree) → Trafalgar Square → Whitehall → Big Ben & Westminster Abbey → Westminster Bridge → London Eye. About 1.5–2 hours at an easy pace.", map: "Covent Garden Piazza" },
+        { time: "16:00", title: "Southbank Centre Winter Market", text: "Alpine chalets, mulled wine and street food along the river as it gets dark (sunset around 16:15).", map: "Southbank Centre Winter Market, Queen's Walk" },
+        { time: "17:00", title: "Home: rest & coffee", text: "Jubilee from Waterloo straight to West Hampstead, about 15 minutes.", rest: true },
+        { time: "20:00", title: "Albert's Schloss", text: "Bavarian beer hall on Shaftesbury Ave: dinner, live band and cabaret that turns into a dance party. Night Tube on the Jubilee line runs all night from Green Park.", map: "Albert's Schloss, 20-24 Shaftesbury Avenue", book: true }
+      ]},
+      { name: "Rainy day", icon: "☂", note: "The shopping is indoors anyway; the afternoon moves under cover.", items: [
+        { time: "09:45", title: "Jubilee line to Bond Street", text: "About 10 minutes from West Hampstead.", map: "Bond Street Station" },
+        { time: "10:00", title: "Harry Potter Shop, Oxford Street", text: "Be there at opening. Butterbeer at the Leaky Cauldron café is the perfect rainy-morning start.", map: "Harry Potter Shop, 134-140 Oxford Street" },
+        { time: "10:45", title: "Shopping run", text: "Selfridges, Liberty and the Carnaby shops: all easy to duck between.", map: "Liberty London, Regent Street" },
+        { time: "13:00", title: "Lunch at Kingly Court", text: "Partly covered courtyard with three floors of restaurants.", map: "Kingly Court, Carnaby" },
+        { time: "14:00", title: "Covent Garden market hall", text: "The covered market building, decorated for Christmas with giant baubles and bells.", map: "Covent Garden Market Building" },
+        { time: "15:00", title: "National Gallery", text: "Free, on Trafalgar Square. Pick a few rooms rather than trying to see it all.", map: "National Gallery, Trafalgar Square" },
+        { time: "16:30", title: "Home: rest & coffee", text: "If the rain eases, take a quick look at the Southbank market first; otherwise Jubilee home from Green Park.", rest: true },
+        { time: "20:00", title: "Albert's Schloss", text: "Dinner, live band, dancing. Night Tube on the Jubilee line from Green Park.", map: "Albert's Schloss, 20-24 Shaftesbury Avenue", book: true }
+      ]}
+    ]
+  },
+  {
+    id: "sunday", date: "2026-11-15", label: "Sun 15 Nov", title: "East London markets", area: "Columbia Road · Broadway Market · Brick Lane · Shoreditch · Spitalfields",
+    tags: ["Flower market", "Vintage", "Street art"],
+    variants: [
+      { name: "Clear skies", icon: "✦", note: "A walking day: comfy shoes.", items: [
+        { time: "08:30", title: "Overground east", text: "Mildmay line to Highbury & Islington, change to the Windrush line → Hoxton. About 40 minutes.", map: "Hoxton Station" },
+        { time: "09:00", title: "Columbia Road Flower Market", text: "Go early: by 11 it's shoulder to shoulder. Coffee from one of the little shops on the street.", map: "Columbia Road Flower Market" },
+        { time: "10:30", title: "Walk to Broadway Market", text: "20 minutes north via Hackney Road or the canal. Sunday is the smaller version of the market, still plenty of food.", map: "Broadway Market, Hackney" },
+        { time: "12:00", title: "Lunch at Broadway Market", text: "Graze the stalls, then a stroll in London Fields if the weather's good.", map: "London Fields" },
+        { time: "13:00", title: "Brick Lane", text: "Sunday Upmarket and Backyard Market in the Old Truman Brewery, plus vintage shops like Beyond Retro and Rokit.", map: "Sunday Upmarket, Old Truman Brewery, Brick Lane" },
+        { time: "14:30", title: "Shoreditch street art", text: "Sclater St, Redchurch St and Fashion St.", map: "Redchurch Street, Shoreditch" },
+        { time: "15:15", title: "Old Spitalfields Market", text: "Its Christmas market is on from 11 Nov.", map: "Old Spitalfields Market" },
+        { time: "16:00", title: "Home: rest & coffee", text: "Liverpool St → Elizabeth line to Bond St → Jubilee home. About 35 minutes.", rest: true },
+        { time: "19:30", title: "Relaxed dinner near home", text: "A Sunday roast in a Hampstead pub after the big Saturday night.", map: "Hampstead pubs", book: true }
+      ]},
+      { name: "Rainy day", icon: "☂", note: "Skip the outdoor markets and go straight to the covered ones.", items: [
+        { time: "08:30", title: "Overground east", text: "Mildmay line to Highbury & Islington, change to the Windrush line → Hoxton.", map: "Hoxton Station" },
+        { time: "09:00", title: "Columbia Road, with umbrellas", text: "In light rain it's still lovely and quieter. If it's pouring, skip it and head to Brick Lane.", map: "Columbia Road Flower Market" },
+        { time: "10:30", title: "Brick Lane, indoors", text: "Sunday Upmarket in the Old Truman Brewery, plus the vintage shops (Beyond Retro, Rokit).", map: "Sunday Upmarket, Old Truman Brewery, Brick Lane" },
+        { time: "12:30", title: "Lunch at the Upmarket food stalls", text: "Covered and full of choice.", map: "Sunday Upmarket, Brick Lane" },
+        { time: "14:00", title: "Old Spitalfields Market", text: "Fully covered, with the Christmas market inside.", map: "Old Spitalfields Market" },
+        { time: "15:30", title: "Home: rest & coffee", text: "Liverpool St → Elizabeth line to Bond St → Jubilee home.", rest: true },
+        { time: "19:30", title: "Relaxed dinner near home", text: "A Sunday roast in a Hampstead pub.", map: "Hampstead pubs", book: true }
+      ]}
+    ]
+  },
+  {
+    id: "monday", date: "2026-11-16", label: "Mon 16 Nov", title: "Morning out + Moulin Rouge", area: "Choose the morning on the day, then Soho for dinner and the show",
+    tags: ["3 morning options", "Moulin Rouge 19:30"],
+    variants: [
+      { name: "Canal & Camden", icon: "✦", note: "Shorter and closer to home: the better pick if it's cold.", items: [
+        { time: "10:00", title: "To Little Venice", text: "Jubilee to Baker Street, change to the Bakerloo line → Warwick Avenue. About 20 minutes.", map: "Warwick Avenue Station" },
+        { time: "10:20", title: "Little Venice", text: "Coffee by the water and the painted narrowboats.", map: "Little Venice" },
+        { time: "10:45", title: "Regent's Canal walk to Camden Lock", text: "About 4 km and an hour, flat. A short hop up to street level at the Maida Hill tunnel, then houseboats, villas along Regent's Park and the London Zoo aviary.", map: "Regent's Canal towpath, Lisson Grove" },
+        { time: "12:00", title: "Lunch at Camden Market", text: "Dozens of food stalls around Camden Lock and the Stables Market.", map: "Camden Market" },
+        { time: "13:30", title: "Optional: Primrose Hill", text: "15-minute walk for the best free view of the skyline.", map: "Primrose Hill viewpoint" },
+        { time: "14:30", title: "Mildmay line home", text: "From Camden Road straight to West Hampstead, about 10 minutes.", map: "Camden Road Station" },
+        ...mondayEvening
+      ]},
+      { name: "Richmond", icon: "❦", note: "A real day-out-of-the-city feel, and a direct train.", items: [
+        { time: "10:00", title: "Mildmay line to Richmond", text: "Straight from West Hampstead, about 35 minutes, no changes.", map: "Richmond Station" },
+        { time: "10:45", title: "Riverside & Richmond Hill", text: "Walk along the Thames from Richmond Bridge, then up to the Terrace for the famous view over the river.", map: "Richmond Hill Terrace" },
+        { time: "11:30", title: "Richmond Park", text: "Pembroke Lodge gardens and the free-roaming deer.", map: "Pembroke Lodge, Richmond Park" },
+        { time: "13:00", title: "Long pub lunch by the river", text: "Plenty of riverside pubs right by Richmond Bridge.", map: "Richmond riverside pubs" },
+        { time: "14:30", title: "Mildmay line home", text: "About 35 minutes.", map: "Richmond Station" },
+        ...mondayEvening
+      ]},
+      { name: "Rainy day", icon: "☂", note: "Stay central and under cover, close to the theatre.", items: [
+        { time: "10:00", title: "To the British Museum", text: "Jubilee to Bond St, Elizabeth line one stop to Tottenham Court Road.", map: "Tottenham Court Road Station" },
+        { time: "10:30", title: "British Museum", text: "Free. The Rosetta Stone, the Egyptian mummies and the Great Court roof.", map: "British Museum" },
+        { time: "13:00", title: "Lunch in Seven Dials / Covent Garden", text: "Lots of choice in a few covered minutes' walk.", map: "Seven Dials Market" },
+        { time: "14:00", title: "Covent Garden market hall", text: "Browse under cover, then home.", map: "Covent Garden Market Building" },
+        ...mondayEvening
+      ]}
+    ]
+  },
+  {
+    id: "tuesday", date: "2026-11-17", label: "Tue 17 Nov", title: "Departure", area: "Early morning start",
+    tags: ["Goodbyes"],
+    variants: [{ name: "Plan", items: [
+      { time: "Early", title: "Head off", text: "Bags packed on Monday afternoon, so it's just coffee and out the door. Until next time." }
+    ]}]
+  }
+];
+
+// Weather outlook, checked Sat 7 Nov 2026 for West Hampstead. Fri/Sat are forecast; Sun–Tue are typical mid-November values.
+const WX_CHECKED = "Sat 7 Nov";
+const WEATHER = {
+  friday:   { temp: "8° / 0°",  sky: "Dry, clear and cold", src: "forecast", wear: "Arriving late, close to freezing: a warm coat, scarf and gloves in the hand luggage, not the suitcase." },
+  saturday: { temp: "9° / 1°",  sky: "Dry, mostly sunny", src: "forecast", wear: "Crisp and dry, great for the walking tour. Layers you can open up inside the shops, warm coat, scarf. Something a bit smarter for Albert's Schloss, and it'll be near freezing on the way home." },
+  sunday:   { temp: "~10° / 5°", sky: "Changeable, showers possible", src: "typical", wear: "Comfy waterproof shoes or boots: it's a full walking day on market streets. Compact umbrella, warm layers. Check the live forecast the night before and switch to the rain plan if needed." },
+  monday:   { temp: "~10° / 5°", sky: "Changeable, showers possible", src: "typical", wear: "Daytime: walking shoes and a waterproof layer for the canal or Richmond. Evening: dress up for the theatre, but bring a coat that works over it." },
+  tuesday:  { temp: "~9° / 4°",  sky: "Early morning chill", src: "typical", wear: "Coat and scarf on for the early start." }
+};
+const PACK = [
+  "A proper warm coat (nights are dipping to 0–5°C)",
+  "Scarf, gloves and a hat for the mornings and late nights",
+  "Waterproof walking shoes or boots: you'll walk 10–15 km a day",
+  "A small umbrella or a hooded waterproof",
+  "Layers: shops, pubs and the tube are warm",
+  "One going-out outfit for Albert's Schloss and one for the theatre",
+  "Phone charger / power bank: maps and contactless all day"
+];
+const LIVE_URL = "https://www.bbc.co.uk/weather/2643743";
+
+function openWeather() {
+  current = { id: "weather" };
+  lastFocus = document.activeElement;
+  document.getElementById("sheet-art").innerHTML = ART.weather();
+  document.getElementById("sheet-date").textContent = "Outlook checked " + WX_CHECKED;
+  document.getElementById("sheet-title").textContent = "Weather & what to wear";
+  document.getElementById("sheet-area").textContent = "Expect cold, mostly dry weekend weather. Check the live forecast each evening.";
+  document.getElementById("toggle-wrap").innerHTML = "";
+  document.getElementById("sheet-body").innerHTML = `
+    <ul class="wx-list">${DAYS.map(d => { const w = WEATHER[d.id]; return `<li class="wx-day">
+      <div><div class="wx-when">${esc(d.label)}</div><div class="wx-temp">${esc(w.temp)}</div></div>
+      <div><div class="wx-sky">${esc(w.sky)}<span class="wx-src">${w.src === "forecast" ? "Forecast" : "Typical for Nov"}</span></div></div>
+      <p class="wx-wear">${esc(w.wear)}</p></li>`; }).join("")}</ul>
+    <h3 class="wx-h3">Pack list</h3>
+    <ul class="pack">${PACK.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
+    <a class="live-link" href="${LIVE_URL}" target="_blank" rel="noopener">Open the live London forecast →</a>
+    <div class="sheet-end" style="margin-top:18px"><button type="button" data-close>Back to all days</button></div>`;
+  document.querySelector("#sheet-body [data-close]").addEventListener("click", () => closeDay());
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+  document.getElementById("close").focus();
+}
+
+// ---------- Illustrations (inline SVG, drawn in code) ----------
+const BULBS = ["#ff4d6d", "#ffd166", "#2ee6a6", "#4cc9f0", "#c77dff", "#ff9f1c", "#ff7eb6"];
+let uid = 0;
+function lights(x0, x1, y, sag, n, r = 3.2, offset = 0) {
+  const mx = (x0 + x1) / 2, cy = y + sag * 2;
+  let out = `<path d="M${x0} ${y} Q${mx} ${cy} ${x1} ${y}" stroke="#1a0f08" stroke-width="1.2" fill="none" opacity=".8"/>`;
+  for (let i = 1; i < n; i++) {
+    const t = i / n, x = (1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * mx + t * t * x1;
+    const yy = (1 - t) * (1 - t) * y + 2 * (1 - t) * t * cy + t * t * y;
+    const c = BULBS[(i + offset) % BULBS.length], delay = ((i * 37 + offset * 13) % 26) / 10;
+    out += `<circle class="tw" style="animation-delay:-${delay}s" cx="${x.toFixed(1)}" cy="${(yy + r + 1).toFixed(1)}" r="${r * 2.6}" fill="${c}" opacity=".22"/>`;
+    out += `<circle class="tw" style="animation-delay:-${delay}s" cx="${x.toFixed(1)}" cy="${(yy + r + 1).toFixed(1)}" r="${r}" fill="${c}"/>`;
+  }
+  return out;
+}
+function sky(top, bottom) {
+  const id = "g" + (uid++);
+  return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="${bottom}"/></linearGradient></defs><rect width="320" height="140" fill="url(#${id})"/>`;
+}
+function stars(n, seed) {
+  let o = "", s = seed;
+  for (let i = 0; i < n; i++) {
+    s = (s * 9301 + 49297) % 233280; const x = s / 233280 * 320;
+    s = (s * 9301 + 49297) % 233280; const y = s / 233280 * 60;
+    o += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${i % 4 ? .7 : 1.2}" fill="#fff4d6" opacity=".8"/>`;
+  }
+  return o;
+}
+const svg = inner => `<svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+
+const ART = {
+  friday: () => svg(
+    sky("#1f1030", "#5c2b2b") + stars(26, 7) +
+    `<circle cx="262" cy="30" r="13" fill="#fff1c9"/><circle cx="268" cy="26" r="12" fill="#2a1532"/>` +
+    [0, 54, 108, 162, 216, 270].map((x, i) => {
+      const h = 62 + (i % 2) * 8;
+      return `<rect x="${x}" y="${140 - h}" width="52" height="${h}" fill="#2a170d"/>
+        <polygon points="${x},${140 - h} ${x + 26},${128 - h} ${x + 52},${140 - h}" fill="#24130a"/>
+        <rect x="${x + 8}" y="${150 - h}" width="12" height="15" fill="${i % 3 ? "#ffcf6e" : "#ff9f5a"}" opacity=".9"/>
+        <rect x="${x + 32}" y="${150 - h}" width="12" height="15" fill="${i % 2 ? "#ffcf6e" : "#3a2416"}"/>
+        <rect x="${x + 20}" y="118" width="12" height="22" fill="#5a1f1f"/>`;
+    }).join("") +
+    lights(-10, 330, 52, 10, 18, 2.6, 1)
+  ),
+  saturday: () => svg(
+    sky("#2d1338", "#b34f2e") + stars(14, 3) +
+    `<rect x="262" y="40" width="22" height="100" fill="#22120a"/><polygon points="262,40 273,14 284,40" fill="#22120a"/>
+     <circle cx="273" cy="52" r="7" fill="#ffe2a3"/><circle cx="273" cy="52" r="7" fill="none" stroke="#22120a" stroke-width="1"/>
+     <line x1="273" y1="52" x2="273" y2="47" stroke="#22120a" stroke-width="1"/><line x1="273" y1="52" x2="276" y2="53" stroke="#22120a" stroke-width="1"/>` +
+    [0, 46, 92, 138, 184].map((x, i) => `<rect x="${x}" y="${78 - (i % 3) * 6}" width="44" height="${62 + (i % 3) * 6}" fill="#2e1a0e"/>
+      <rect x="${x + 5}" y="112" width="34" height="20" fill="${BULBS[(i + 1) % 7]}" opacity=".35"/>
+      <rect x="${x + 6}" y="${88 - (i % 3) * 6}" width="9" height="11" fill="#ffd27a"/><rect x="${x + 28}" y="${88 - (i % 3) * 6}" width="9" height="11" fill="#ffd27a" opacity=".7"/>`).join("") +
+    lights(-10, 250, 34, 6, 16, 2.8, 0) + lights(-10, 250, 60, 7, 16, 2.6, 3) +
+    `<text x="214" y="30" font-size="16" fill="#ffe08a">✦</text><text x="40" y="22" font-size="11" fill="#c7f9ff">✦</text>`
+  ),
+  sunday: () => svg(
+    sky("#5a2a22", "#e09a52") +
+    (() => {
+      let o = `<path d="M-5 14 Q160 34 325 14" stroke="#2b190d" fill="none"/>`;
+      for (let i = 0; i < 16; i++) {
+        const x = i * 21, y = 14 + Math.sin(i / 15 * Math.PI) * 10;
+        o += `<polygon points="${x},${y} ${x + 16},${y + 1} ${x + 8},${y + 15}" fill="${BULBS[i % 7]}"/>`;
+      }
+      return o;
+    })() +
+    `<rect x="20" y="52" width="280" height="14" fill="#f4e7cf"/>` +
+    Array.from({ length: 14 }, (_, i) => `<rect x="${20 + i * 20}" y="52" width="10" height="14" fill="#c43d4b"/>`).join("") +
+    `<rect x="20" y="66" width="280" height="74" fill="#3a2416"/>` +
+    Array.from({ length: 7 }, (_, i) => {
+      const x = 32 + i * 39, c = BULBS[(i * 3) % 7], c2 = BULBS[(i * 3 + 2) % 7];
+      let f = `<rect x="${x}" y="108" width="28" height="30" rx="3" fill="#8a5a3a"/>`;
+      for (let k = 0; k < 9; k++) {
+        const fx = x + 3 + (k % 4) * 7.5, fy = 80 + Math.floor(k / 4) * 9 + (k % 2) * 3;
+        f += `<line x1="${fx}" y1="${fy}" x2="${x + 14}" y2="108" stroke="#3f7a3a" stroke-width="1.2"/><circle cx="${fx}" cy="${fy}" r="4.6" fill="${k % 3 ? c : c2}"/>`;
+      }
+      return f;
+    }).join("")
+  ),
+  monday: () => svg(
+    sky("#24112e", "#8c3b3b") + stars(18, 11) +
+    lights(-10, 330, 18, 8, 18, 2.6, 2) +
+    `<rect y="104" width="320" height="36" fill="#1d2a33"/>
+     <path d="M10 118 h30 M70 126 h40 M150 116 h26 M200 130 h34" stroke="#f2c46d" stroke-width="1.2" opacity=".5"/>` +
+    `<path d="M14 96 h150 l14 10 h-174 z" fill="#1f5c45"/><rect x="30" y="80" width="120" height="17" fill="#8b1e2e"/>
+     <rect x="30" y="78" width="120" height="3" fill="#ffd166"/>
+     ${[40, 62, 84, 106, 128].map(x => `<rect x="${x}" y="84" width="10" height="8" rx="2" fill="#ffcf6e"/>`).join("")}
+     <rect x="140" y="72" width="3" height="8" fill="#2b190d"/>` +
+    `<polygon points="244,104 254,52 278,52 288,104" fill="#b3202f"/><polygon points="250,56 266,40 282,56" fill="#7d1420"/>
+     <rect x="258" y="80" width="16" height="24" fill="#ffd27a"/>
+     <g class="sails" style="transform-origin:266px 56px">
+       ${[0, 90, 180, 270].map(a => `<rect x="263" y="20" width="6" height="34" fill="#f4e7cf" opacity=".9" transform="rotate(${a} 266 56)"/>`).join("")}
+     </g><circle cx="266" cy="56" r="3" fill="#2b190d"/>` +
+    `<text x="208" y="96" font-size="9" fill="#ffd166">✦</text>`
+  ),
+  tuesday: () => svg(
+    sky("#3a2140", "#f0a256") + stars(8, 5) +
+    `<path d="M20 70 Q120 20 230 40" stroke="#fff1c9" stroke-dasharray="4 5" fill="none" opacity=".7"/>
+     <g transform="translate(232 32) rotate(14)"><path d="M0 6 L22 4 L26 7 L22 10 L0 8 Z" fill="#fff1c9"/><path d="M10 6 L6 -4 L11 -4 L16 6 Z M10 8 L6 17 L11 17 L16 8 Z" fill="#fff1c9"/></g>` +
+    `<rect x="122" y="70" width="76" height="58" rx="8" fill="#7a3b2a"/><rect x="146" y="60" width="28" height="12" rx="4" fill="none" stroke="#2b190d" stroke-width="4"/>
+     <rect x="122" y="92" width="76" height="6" fill="#2b190d" opacity=".5"/><rect x="132" y="70" width="5" height="58" fill="#ffd166" opacity=".8"/><rect x="183" y="70" width="5" height="58" fill="#ffd166" opacity=".8"/>
+     <rect x="196" y="98" width="16" height="11" rx="2" fill="#4cc9f0" transform="rotate(12 196 98)"/>` +
+    `<rect y="128" width="320" height="12" fill="#2b190d"/>` + lights(-10, 330, 10, 6, 18, 2.4, 4)
+  ),
+  weather: () => svg(
+    sky("#1f1030", "#4a2c18") + stars(20, 13) +
+    `<circle cx="70" cy="56" r="20" fill="#ffd166" opacity=".9"/>
+     <g fill="#f4e7cf" opacity=".95"><ellipse cx="96" cy="72" rx="34" ry="16"/><ellipse cx="120" cy="64" rx="24" ry="18"/><ellipse cx="74" cy="76" rx="22" ry="12"/></g>
+     <g fill="#c8b08a" opacity=".85"><ellipse cx="230" cy="58" rx="36" ry="17"/><ellipse cx="256" cy="50" rx="22" ry="16"/></g>
+     ${[212, 228, 244, 260].map((x, i) => `<line x1="${x}" y1="80" x2="${x - 5}" y2="${96 + (i % 2) * 6}" stroke="#4cc9f0" stroke-width="2" stroke-linecap="round"/>`).join("")}
+     ${[150, 172, 190, 300, 30].map((x, i) => `<text x="${x}" y="${40 + (i % 3) * 30}" font-size="${10 + (i % 2) * 4}" fill="#fff">❄</text>`).join("")}` +
+    lights(-10, 330, 120, 4, 18, 2.6, 5)
+  )
+};
+
+function renderGarland() {
+  const g = document.getElementById("garland");
+  const w = Math.max(320, g.clientWidth), seg = 260;
+  let inner = "";
+  for (let x = 0, k = 0; x < w; x += seg, k++) {
+    const x1 = Math.min(w + 10, x + seg);
+    inner += lights(x, x1, 8, 14, Math.max(4, Math.round((x1 - x) / 34)), 4, k * 3);
+  }
+  g.innerHTML = `<svg viewBox="0 0 ${w} 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+}
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function londonToday() {
+  try {
+    return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/London", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  } catch (e) { return new Date().toISOString().slice(0, 10); }
+}
+
+function renderCards() {
+  const today = londonToday();
+  document.getElementById("days").innerHTML = DAYS.map(d => {
+    const multi = d.variants.length > 1;
+    const optTag = multi ? `<span class="tag opt">${d.variants.length === 3 ? "3 versions" : "Rain plan inside"}</span>` : "";
+    return `<button class="day-card" data-id="${d.id}" aria-label="Open ${esc(d.label)}: ${esc(d.title)}">
+      <span class="card-art" aria-hidden="true">${ART[d.id]()}</span>
+      <span class="card-body">
+      <div class="day-top"><span class="day-date">${esc(d.label)}</span>${d.date === today ? '<span class="tag today">Today</span>' : `<span class="wx-chip">${esc(WEATHER[d.id].temp)}</span>`}</div>
+      <h3 class="day-title">${esc(d.title)}</h3>
+      <p class="day-area">${esc(d.area)}</p>
+      <div class="day-tags">${d.tags.map(t => `<span class="tag">${esc(t)}</span>`).join("")}${optTag}</div>
+      <span class="open-hint">Open the day <span aria-hidden="true">→</span></span>
+      </span>
+    </button>`;
+  }).join("");
+  document.querySelectorAll(".day-card").forEach(b => b.addEventListener("click", () => { location.hash = b.dataset.id; }));
+}
+
+let current = null, currentVariant = 0, lastFocus = null;
+
+function renderVariant() {
+  const d = current, v = d.variants[currentVariant];
+  const tw = document.getElementById("toggle-wrap");
+  if (d.variants.length > 1) {
+    tw.innerHTML = `<div class="toggle" role="group" aria-label="Choose a version of the day">${d.variants.map((x, i) =>
+      `<button type="button" data-i="${i}" aria-pressed="${i === currentVariant}"><span aria-hidden="true">${x.icon || ""}</span>${esc(x.name)}</button>`).join("")}</div>
+      ${v.note ? `<p class="variant-note">${esc(v.note)}</p>` : ""}`;
+    tw.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { currentVariant = +b.dataset.i; renderVariant(); tw.querySelector(`[data-i="${currentVariant}"]`).focus(); }));
+  } else {
+    tw.innerHTML = v.note ? `<p class="variant-note">${esc(v.note)}</p>` : "";
+  }
+  const body = document.getElementById("sheet-body");
+  body.innerHTML = `<ol class="timeline">${v.items.map(it => `<li class="${it.rest ? "rest" : ""}">
+      <div class="time">${esc(it.time)}</div>
+      <div class="item-title">${esc(it.title)}${it.book ? '<span class="book">Book</span>' : ""}</div>
+      <p class="item-text">${esc(it.text)}</p>
+      ${it.map ? `<a class="map-link" href="${M(it.map)}" target="_blank" rel="noopener">⌖ Open in Google Maps</a>` : ""}
+    </li>`).join("")}</ol>
+    <div class="sheet-end"><button type="button" data-close>Back to all days</button></div>`;
+  body.querySelector("[data-close]").addEventListener("click", () => closeDay());
+  body.scrollTop = 0;
+}
+
+function openDay(id) {
+  const d = DAYS.find(x => x.id === id);
+  if (!d) { closeDay(false); return; }
+  if (current !== d) currentVariant = 0;
+  current = d;
+  lastFocus = document.activeElement;
+  document.getElementById("sheet-art").innerHTML = ART[d.id]();
+  document.getElementById("sheet-date").textContent = d.label;
+  document.getElementById("sheet-title").textContent = d.title;
+  document.getElementById("sheet-area").textContent = d.area;
+  renderVariant();
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+  document.getElementById("close").focus();
+}
+
+function closeDay(clearHash = true) {
+  document.getElementById("overlay").classList.remove("open");
+  document.body.style.overflow = "";
+  current = null;
+  if (clearHash && location.hash) history.replaceState(null, "", location.pathname + location.search);
+  const card = lastFocus && document.contains(lastFocus) ? lastFocus : null;
+  if (card) card.focus();
+}
+
+function route() {
+  const id = location.hash.replace("#", "");
+  if (id === "weather") openWeather();
+  else if (id) openDay(id); else if (current) closeDay(false);
+}
+
+document.getElementById("close").addEventListener("click", () => closeDay());
+document.getElementById("backdrop").addEventListener("click", () => closeDay());
+document.addEventListener("keydown", e => { if (e.key === "Escape" && current) closeDay(); });
+window.addEventListener("hashchange", route);
+
+// Countdown to arrival: Fri 13 Nov 2026, ~21:00 London time (GMT in November)
+const ARRIVAL = Date.UTC(2026, 10, 13, 21, 0, 0);
+const DEPART = Date.UTC(2026, 10, 17, 9, 0, 0);
+function tick() {
+  const el = document.getElementById("countdown");
+  const now = Date.now();
+  if (now >= DEPART) { el.innerHTML = `<span class="cd-msg">Mischief over… until next time ✦</span>`; return; }
+  if (now >= ARRIVAL) { el.innerHTML = `<span class="label">The visit</span><span class="cd-msg">They're here. Enjoy every minute ✦</span>`; return; }
+  let s = Math.floor((ARRIVAL - now) / 1000);
+  const d = Math.floor(s / 86400); s -= d * 86400;
+  const h = Math.floor(s / 3600); s -= h * 3600;
+  const m = Math.floor(s / 60); s -= m * 60;
+  const u = (n, l) => `<div class="cd-unit"><span class="cd-num">${String(n).padStart(2, "0")}</span><span class="cd-name">${l}</span></div>`;
+  el.innerHTML = `<span class="label">Arriving Friday evening in</span>${u(d, "days")}${u(h, "hours")}${u(m, "minutes")}${u(s, "seconds")}`;
+}
+
+// Snow, with drifting coloured fairy-light glows
+(function snow() {
+  const c = document.getElementById("snow");
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ctx = c.getContext("2d");
+  let w, h, flakes;
+  function size() {
+    const dpr = window.devicePixelRatio || 1;
+    w = c.clientWidth; h = c.clientHeight;
+    c.width = w * dpr; c.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.round(Math.min(110, w * h / 9000));
+    flakes = Array.from({ length: n }, () => ({
+      x: Math.random() * w, y: Math.random() * h, r: Math.random() * 2.2 + .6,
+      s: Math.random() * .6 + .25, d: Math.random() * Math.PI * 2,
+      glow: Math.random() < .14 ? BULBS[Math.floor(Math.random() * BULBS.length)] : null
+    }));
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    for (const f of flakes) {
+      ctx.beginPath();
+      if (f.glow) { ctx.globalAlpha = .7; ctx.fillStyle = f.glow; ctx.shadowColor = f.glow; ctx.shadowBlur = 12; ctx.arc(f.x, f.y, f.r + .8, 0, Math.PI * 2); }
+      else { ctx.globalAlpha = .75; ctx.fillStyle = "#fff6e4"; ctx.shadowBlur = 0; ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); }
+      ctx.fill(); ctx.globalAlpha = 1;
+    }
+  }
+  function step() {
+    for (const f of flakes) {
+      f.d += .01; f.y += f.s; f.x += Math.sin(f.d) * .35;
+      if (f.y > h + 4) { f.y = -4; f.x = Math.random() * w; }
+    }
+    draw(); requestAnimationFrame(step);
+  }
+  size(); window.addEventListener("resize", size);
+  if (reduce) draw(); else requestAnimationFrame(step);
+})();
+
+renderGarland(); window.addEventListener("resize", renderGarland);
+renderCards();
+tick(); setInterval(tick, 1000);
+route();
+</script>
+</body>
+</html>
